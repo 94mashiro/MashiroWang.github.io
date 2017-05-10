@@ -59,6 +59,72 @@
 
   
     
+    <h3 class="article-title"><a href="/2017/05/10/ssctf-2017-wp/"><span>SSCTF 两道Misc Writeup</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/05/10/ssctf-2017-wp/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-05-10T09:08:11.000Z">
+          2017-05-10
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h2 id="Misc100-flag在哪里"><a href="#Misc100-flag在哪里" class="headerlink" title="Misc100 flag在哪里"></a>Misc100 flag在哪里</h2><p>附件是个pcapng流量包，通过分析发现他成功请求了一些 <code>.nijiakadaye</code> 下的路径。<br>访问 <code>60.191.205.87/.nijiakadaye/COMMIT_EDITMSG</code> 显示 <code>this is flag</code> 。<br>基本可以判断是 <code>git泄露</code>。<br>然后使用 <code>githack</code> 把项目拖下来。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ python GitHack.py http://60.191.205.87/.nijiakadaye</div></pre></td></tr></table></figure>
+<p>发现是个phpcms，在根目录下发现一个 <code>pass.php</code> ，提交发现结果错误，然后又在 <code>phpcms/templates</code> 下发现了 <code>flag.txt</code>， 看上去有模有样，结果提交上去依旧错误。</p>
+<p>后来想到既然是git项目，所以先用git log看看，果然有好个版本。</p>
+<figure class="highlight avrasm"><table><tr><td class="code"><pre><div class="line">commit <span class="number">6</span>a0bbb4f6ce6d101c0cf5abac4b04ff004b1a918</div><div class="line"><span class="symbol">Author:</span> zhang tie &lt;zt<span class="subst">@163</span>.com&gt;</div><div class="line"><span class="symbol">Date:</span>   Wed Apr <span class="number">26</span> <span class="number">06</span>:<span class="number">10</span>:<span class="number">14</span> <span class="number">2017</span> <span class="number">-0400</span></div><div class="line">    this is flag</div><div class="line">commit <span class="number">8894</span>bb4d45643d52b5eb8175710999fcd398ebd4</div><div class="line"><span class="symbol">Author:</span> zhang tie &lt;zt<span class="subst">@163</span>.com&gt;</div><div class="line"><span class="symbol">Date:</span>   Wed Apr <span class="number">26</span> <span class="number">06</span>:<span class="number">08</span>:<span class="number">12</span> <span class="number">2017</span> <span class="number">-0400</span></div><div class="line">    <span class="number">666666666</span></div><div class="line">commit <span class="number">473e9</span>cce7391e913ffcf10b96ba6e4c0b950fe8e</div><div class="line"><span class="symbol">Author:</span> zhang tie &lt;zt<span class="subst">@163</span>.com&gt;</div><div class="line"><span class="symbol">Date:</span>   Wed Apr <span class="number">26</span> <span class="number">06</span>:<span class="number">05</span>:<span class="number">28</span> <span class="number">2017</span> <span class="number">-0400</span></div><div class="line">    test pass</div><div class="line">commit <span class="number">9</span>ab1451776fb32e82c2524fc4f37fa3f33ceae2f</div><div class="line"><span class="symbol">Author:</span> zhang tie &lt;zt<span class="subst">@163</span>.com&gt;</div><div class="line"><span class="symbol">Date:</span>   Wed Apr <span class="number">26</span> <span class="number">05</span>:<span class="number">46</span>:<span class="number">06</span> <span class="number">2017</span> <span class="number">-0400</span></div><div class="line">    password?</div><div class="line">commit eac8d383f192730a605bb5d3115aa4bbba8a99ea</div><div class="line"><span class="symbol">Author:</span> zhang tie &lt;zt<span class="subst">@163</span>.com&gt;</div><div class="line"><span class="symbol">Date:</span>   Wed Apr <span class="number">26</span> <span class="number">05</span>:<span class="number">32</span>:<span class="number">31</span> <span class="number">2017</span> <span class="number">-0400</span></div><div class="line">    pass??</div><div class="line">commit cd7bee8ad1b5807b7136fd8fb0c9ae853204c1fc</div><div class="line"><span class="symbol">Author:</span> zhang tie &lt;zt<span class="subst">@163</span>.com&gt;</div><div class="line"><span class="symbol">Date:</span>   Wed Apr <span class="number">26</span> <span class="number">05</span>:<span class="number">29</span>:<span class="number">33</span> <span class="number">2017</span> <span class="number">-0400</span></div><div class="line">    pass????</div></pre></td></tr></table></figure>
+<p>接下来就是一个个比对找差异。<br>最后发现 <code>flag.php</code> 被改了， <code>flag.txt</code> 也被改了。<br>真正的flag是这个 <code>SSCTF{xsL3HOvFlV+H40s0mhszc5t1x38EU0ZIFJHZ/h2sC3U=}</code>，可是是被加密过的。<br>然后在 <code>flag.php</code> 中找到了疑似加密的代码。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><div class="line">--- a/ssctf/pass.php</div><div class="line">+++ b/ssctf/pass.php</div><div class="line">@@ <span class="number">-1</span> +<span class="number">1</span>,<span class="number">30</span> @@</div><div class="line">-this is pass?</div><div class="line">+<span class="meta">&lt;?php</span></div><div class="line">+$encrypt = base64_encode(wtf(<span class="string">'flag_password'</span>, <span class="string">'ssctf'</span>));</div><div class="line">+<span class="function"><span class="keyword">function</span> <span class="title">wtf</span><span class="params">($data,$pwd)</span> </span>&#123;</div><div class="line">+    $cipher =<span class="string">""</span>;</div><div class="line">+    $key[] =<span class="string">""</span>;</div><div class="line">+    $box[] =<span class="string">""</span>;</div><div class="line">+    $pwd_length = strlen($pwd);</div><div class="line">+    $data_length = strlen($data);</div><div class="line">+    <span class="keyword">for</span> ($i = <span class="number">0</span>; $i &lt; <span class="number">256</span>; $i++) &#123;</div><div class="line">+        $key[$i] = ord($pwd[$i % $pwd_length]);</div><div class="line">+        $box[$i] = $i;</div><div class="line">+    &#125;</div><div class="line">+    <span class="keyword">for</span> ($j = $i = <span class="number">0</span>; $i &lt; <span class="number">256</span>; $i++) &#123;</div><div class="line">+        $j = ($j + $box[$i] + $key[$i]) % <span class="number">256</span>;</div><div class="line">+        $tmp = $box[$i];</div><div class="line">+        $box[$i] = $box[$j];</div><div class="line">+        $box[$j] = $tmp;</div><div class="line">+    &#125;</div><div class="line">+    <span class="keyword">for</span> ($a = $j = $i = <span class="number">0</span>; $i &lt; $data_length; $i++) &#123;</div><div class="line">+        $a = ($a + <span class="number">1</span>) % <span class="number">256</span>;</div><div class="line">+        $j = ($j + $box[$a]) % <span class="number">256</span>;</div><div class="line">+        $tmp = $box[$a];</div><div class="line">+        $box[$a] = $box[$j];</div><div class="line">+        $box[$j] = $tmp;</div><div class="line">+        $k = $box[(($box[$a] + $box[$j]) % <span class="number">256</span>)];</div><div class="line">+        $cipher .= chr(ord($data[$i]) ^ $k);</div><div class="line">+    &#125;</div><div class="line">+    <span class="keyword">return</span> $cipher;</div><div class="line">+&#125;</div><div class="line">+<span class="meta">?&gt;</span></div></pre></td></tr></table></figure>
+<p>一开始并不知道这个算是什么加密，但是直觉告诉我100分应该不会很复杂，所以认为就像 <code>ROT13</code> 那样对着密文再加密一次就能得到原文了，事实证明这是对的，后来知道这是 <code>RC4加密</code> ，记笔记了。</p>
+<h2 id="Misc150-互相伤害"><a href="#Misc150-互相伤害" class="headerlink" title="Misc150 互相伤害"></a>Misc150 互相伤害</h2><p>下载下来通过 file 命令得到也是个pcap流量包。过滤http请求发现get了很多张图片。<br><img src="http://ww2.sinaimg.cn/large/006tNc79gy1ffgdfagzpjj316w0vitr8.jpg" alt=""><br>全部导出后发现是一堆表情包。<br><img src="http://ww2.sinaimg.cn/large/006tNc79gy1ffgdhjw4dej30c80b7gpc.jpg" alt=""><br>这张表情上贴了个二维码，扫一下发现是一串加密过的字符串</p>
+<figure class="highlight gcode"><table><tr><td class="code"><pre><div class="line">U<span class="number">2</span>FsdGVkX<span class="number">1</span>+VpmdLwwhby<span class="symbol">NU80</span>MDlK<span class="number">+8</span>t<span class="number">61</span>sewce<span class="number">2</span>qCVztitDMKpQ<span class="number">4</span>fUl<span class="number">5</span><span class="symbol">nsAZOI7</span>bE<span class="number">9</span>uL<span class="number">8</span>lW /KLfbs<span class="number">33</span>aC<span class="number">1</span>XXw==</div></pre></td></tr></table></figure>
+<p>然后通过上面的提示 <code>AES</code> 和 <code>CTF</code> 加上脑洞知道了是密钥为 <code>CTF</code> 的 <code>AES</code> 加密，直接解密得到。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">668b13e0b0<span class="built_in">fc</span>0944daf4c223b9831e49</div></pre></td></tr></table></figure>
+<p>然而这并不是flag，后来 binwalk 了一下表情包发现里面还藏着个压缩包，于是 <code>binwalk -e *.jpg</code> 得到压缩包，解压后是个二维码，扫出来的结果居然是 <code>扔下内衣……</code> ，看来是被套路了，但是发现有个压缩包的大小和其他的不一样，但是有密码，于是把之前解密得到的密码填入成功解压。</p>
+<p>也是张二维码，反色扫里面小的二维码得到flag。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Writeup/">Writeup</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
     <h3 class="article-title"><a href="/2017/03/24/vue-elesticsearch-demo/"><span>使用Vue2搭建一个搜索引擎前端</span></a></h3>
     
   

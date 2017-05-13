@@ -59,6 +59,54 @@
 
   
     
+    <h3 class="article-title"><a href="/2017/05/13/Solve-Me-Writeup/"><span>Solve_Me_Writeup</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/05/13/Solve-Me-Writeup/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-05-13T07:59:07.000Z">
+          2017-05-13
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h2 id="0x00-Warm-Up"><a href="#0x00-Warm-Up" class="headerlink" title="0x00 Warm Up"></a>0x00 Warm Up</h2><p>base64</p>
+<h2 id="0x01-Bad-Compare"><a href="#0x01-Bad-Compare" class="headerlink" title="0x01 Bad Compare"></a>0x01 Bad Compare</h2><p>发现参数和一堆乱码进行比较，用的 <code>===</code> 感觉没法绕，用burpsuite查看乱码的二进制，然后转成url编码作为参数提交。</p>
+<h2 id="0x02-Winter-Sleep"><a href="#0x02-Winter-Sleep" class="headerlink" title="0x02 Winter Sleep"></a>0x02 Winter Sleep</h2><p>这题首先用 <code>is_numeric</code> 判断传入的参数是否为数字，然后判断数字是否在某个范围内，然后将这个参数转成 <code>int型</code> 后作为sleep的参数。<br>首先我们知道$_GET获取的参数是数字字符串， <code>is_numeric</code> 可以是正确判断数字字符串的，支持普通数字，科学记数法、部分十六进制型。<br>但是使用 <code>(int)</code> 强制转换却不能正确处理十六进制和科学记数法。<br>所以可以找个这个范围内的十六进制或科学记数法的字符型数字。<br>例如 <code>5.184001e6</code> 在 (int) 之后就变成了 <code>5</code>，所以等待5秒后显示flag。 </p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
     <h3 class="article-title"><a href="/2017/05/10/ssctf-2017-wp/"><span>SSCTF 两道Misc Writeup</span></a></h3>
     
   

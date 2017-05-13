@@ -1,0 +1,127 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Solve_Me_Writeup | Mashiro&#39;s Blog</title>
+
+  
+  <meta name="author" content="Mashiro Wang">
+  
+
+  
+  <meta name="description" content="0x00 Warm Upbase64
+0x01 Bad Compare发现参数和一堆乱码进行比较，用的 === 感觉没法绕，用burpsuite查看乱码的二进制，然后转成url编码作为参数提交。
+0x02 Winter Sleep这题首先用 is_numeric 判断传入的参数是否为数字，然后判断数">
+  
+
+  
+  
+  <meta name="keywords" content="">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="Solve_Me_Writeup"/>
+
+  <meta property="og:site_name" content="Mashiro&#39;s Blog"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Mashiro&#39;s Blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">Mashiro&#39;s Blog</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>Solve_Me_Writeup</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/05/13/Solve-Me-Writeup/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-05-13T07:59:07.000Z">
+          2017-05-13
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h2 id="0x00-Warm-Up"><a href="#0x00-Warm-Up" class="headerlink" title="0x00 Warm Up"></a>0x00 Warm Up</h2><p>base64</p>
+<h2 id="0x01-Bad-Compare"><a href="#0x01-Bad-Compare" class="headerlink" title="0x01 Bad Compare"></a>0x01 Bad Compare</h2><p>发现参数和一堆乱码进行比较，用的 <code>===</code> 感觉没法绕，用burpsuite查看乱码的二进制，然后转成url编码作为参数提交。</p>
+<h2 id="0x02-Winter-Sleep"><a href="#0x02-Winter-Sleep" class="headerlink" title="0x02 Winter Sleep"></a>0x02 Winter Sleep</h2><p>这题首先用 <code>is_numeric</code> 判断传入的参数是否为数字，然后判断数字是否在某个范围内，然后将这个参数转成 <code>int型</code> 后作为sleep的参数。<br>首先我们知道$_GET获取的参数是数字字符串， <code>is_numeric</code> 可以是正确判断数字字符串的，支持普通数字，科学记数法、部分十六进制型。<br>但是使用 <code>(int)</code> 强制转换却不能正确处理十六进制和科学记数法。<br>所以可以找个这个范围内的十六进制或科学记数法的字符型数字。<br>例如 <code>5.184001e6</code> 在 (int) 之后就变成了 <code>5</code>，所以等待5秒后显示flag。 </p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2017 Mashiro Wang
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

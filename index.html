@@ -45,9 +45,9 @@
   <nav class="site-navigation">
     <ul>
       
-        <li><a href="/">Home</a></li>
+        <li><a href="/">主页</a></li>
       
-        <li><a href="/archives">Archives</a></li>
+        <li><a href="/archives">归档</a></li>
       
     </ul>
   </nav>
@@ -82,6 +82,8 @@
         <h2 id="0x00-Warm-Up"><a href="#0x00-Warm-Up" class="headerlink" title="0x00 Warm Up"></a>0x00 Warm Up</h2><p>base64</p>
 <h2 id="0x01-Bad-Compare"><a href="#0x01-Bad-Compare" class="headerlink" title="0x01 Bad Compare"></a>0x01 Bad Compare</h2><p>发现参数和一堆乱码进行比较，用的 <code>===</code> 感觉没法绕，用burpsuite查看乱码的二进制，然后转成url编码作为参数提交。</p>
 <h2 id="0x02-Winter-Sleep"><a href="#0x02-Winter-Sleep" class="headerlink" title="0x02 Winter Sleep"></a>0x02 Winter Sleep</h2><p>这题首先用 <code>is_numeric</code> 判断传入的参数是否为数字，然后判断数字是否在某个范围内，然后将这个参数转成 <code>int型</code> 后作为sleep的参数。<br>首先我们知道$_GET获取的参数是数字字符串， <code>is_numeric</code> 可以是正确判断数字字符串的，支持普通数字，科学记数法、部分十六进制型。<br>但是使用 <code>(int)</code> 强制转换却不能正确处理十六进制和科学记数法。<br>所以可以找个这个范围内的十六进制或科学记数法的字符型数字。<br>例如 <code>5.184001e6</code> 在 (int) 之后就变成了 <code>5</code>，所以等待5秒后显示flag。 </p>
+<h2 id="0x03-Hard-Login"><a href="#0x03-Hard-Login" class="headerlink" title="0x03 Hard Login"></a>0x03 Hard Login</h2><p>一开始被双等号比较迷惑了，一直在考虑怎么传进来的参数怎么和一个未知的变量经过类型转换后相等。<br>结果，结果是个跳转哦，curl看源码就知道flag了，坑。</p>
+<h2 id="0x04-Hash-Collision"><a href="#0x04-Hash-Collision" class="headerlink" title="0x04 Hash Collision"></a>0x04 Hash Collision</h2><p><code>hash(&#39;sha512&#39;, $_GET[&#39;foo&#39;]) === hash(&#39;sha512&#39;, $_GET[&#39;bar&#39;])</code><br>直接传数组构造 <code>null == null</code> 就好了。</p>
 
       
     </div>
